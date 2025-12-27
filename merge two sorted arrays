@@ -1,0 +1,34 @@
+class Solution {
+
+    public void conqure(int nums1[], int nums2[], int m, int n) {
+        
+        int merged[] = new int[m+n];
+
+        int idx1=0, idx2=0, x=0;
+
+        while(idx1<m && idx2<n) {
+            if(nums1[idx1] <= nums2[idx2]) {
+                merged[x++] = nums1[idx1++];
+            } else {
+                merged[x++] = nums2[idx2++];
+            }
+        }
+
+        while(idx1<m) {
+            merged[x++] = nums1[idx1++];
+        }
+
+        while(idx2<n) {
+            merged[x++] = nums2[idx2++];
+        }
+
+        for(int i=0; i<merged.length; i++) {
+            nums1[i] = merged[i];
+        }
+    }
+
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        
+        conqure(nums1, nums2, m, n);
+    }   
+}
