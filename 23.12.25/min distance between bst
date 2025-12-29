@@ -1,0 +1,70 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+// class Solution 
+// {
+//     public int minDiffInBST(TreeNode root) 
+//     {
+//         PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+//         operation(root, pq);
+//         int temp = pq.poll(), min = Integer.MAX_VALUE;
+//         while(!pq.isEmpty())
+//         {
+//             int ele = pq.poll();
+//             min = Math.min(min, temp - ele);
+//             temp = ele;
+//         }
+//         return min;
+//     }
+//     public void operation(TreeNode root, PriorityQueue pq)
+//     {
+//         if(root == null) return;
+
+//         operation(root.left, pq);
+//         operation(root.right, pq);
+
+//         pq.add(root.val);
+//     } 
+// }
+
+class Solution 
+{
+    int min = Integer.MAX_VALUE;
+    public int minDiffInBST(TreeNode root) 
+    {
+        operation(root);
+        return min;
+    }
+    public void operation(TreeNode root)
+    {
+        if(root == null) return;
+
+        operation(root.left);
+        operation(root.right);
+
+        check(root.left, root.val);
+        check(root.right, root.val);
+    } 
+    public void check(TreeNode root, int ele)
+    {
+        if(root == null) return;
+
+        check(root.left, ele);
+        check(root.right, ele);
+
+        min = Math.min(min, Math.abs(ele - root.val));
+    } 
+}
