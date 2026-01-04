@@ -1,0 +1,35 @@
+class H2O {
+
+    private final Semaphore oxygen;
+    private final Semaphore hydrogen;
+    private final CyclicBarrier barrier;
+
+    public H2O() {
+        this.oxygen = new Semaphore(1);
+        this.hydrogen = new Semaphore(2);
+        this.barrier = new CyclicBarrier(3);
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+		hydrogen.acquire();
+        releaseHydrogen.run();
+        awaitBarrier();
+        hydrogen.release();
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+        oxygen.acquire();
+		releaseOxygen.run();
+        awaitBarrier();
+        oxygen.release();
+    }
+
+    private void awaitBarrier(){
+        try{
+            barrier.await();
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+}
+
