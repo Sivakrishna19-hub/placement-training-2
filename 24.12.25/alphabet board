@@ -1,0 +1,84 @@
+class Solution {
+    
+    private boolean isValid(int x, int y, char[][] graph) {
+        if (x < 0 || x >= graph.length || y < 0 || y >= graph[0].length) {
+            return false;
+        }
+        return graph[x][y] >= 'a' && graph[x][y] <= 'z';
+    }
+    
+    private class Node {
+        int x;
+        int y;
+        String chunk;
+        String moves;
+        
+        public Node(int x, int y, String ch, String moves) {
+            this.x = x;
+            this.y = y;
+            this.chunk = ch;
+            this.moves = moves;
+        }
+    }
+    
+    public String alphabetBoardPath(String target) {
+        if (target == null || target.trim().isEmpty()) {
+            return "";
+        }
+        Map<Character, Integer[]> directionMap = new HashMap<>();
+        directionMap.put('U', new Integer[]{-1, 0});
+        directionMap.put('D', new Integer[]{1, 0});
+        directionMap.put('L', new Integer[]{0, -1});
+        directionMap.put('R', new Integer[]{0, 1});
+        
+        char[][] graph = new char[][]{
+            {'a','b','c','d','e'},
+            {'f','g','h','i','j'},
+            {'k','l','m','n','o'},
+            {'p','q','r','s','t'},
+            {'u','v','w','x','y'},
+            {'z','_','_','_','_'},
+        };
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(new Node(0, 0, "", ""));
+        boolean[][] visited = new boolean[26][target.length() + 1];
+        visited[0][0] = true; // visited true for 'a' when chunk length is 0
+        
+        while (!queue.isEmpty()) {
+            Node top = queue.poll();
+            
+            // update this node's chunk and moves based on '!'
+            StringBuilder movesHere = new StringBuilder(top.moves);
+            StringBuilder chunkHere = new StringBuilder(top.chunk);
+            int idx = top.chunk.length();
+            while (idx < target.length() && target.charAt(idx) == graph[top.x][top.y]) {
+                movesHere.append("!");
+                chunkHere.append(graph[top.x][top.y]);
+                ++idx;
+            }
+            top.chunk = chunkHere.toString();
+            top.moves = movesHere.toString();
+            
+            if (top.chunk.equals(target)) {
+                return top.moves;
+            }
+            
+            for (Character dir : directionMap.keySet()) {
+                Integer[] offset = directionMap.get(dir);
+                
+                int newX = top.x + offset[0];
+                int newY = top.y + offset[1];
+                if (isValid(newX, newY, graph)) {
+                    int len = top.chunk.length();
+                    int child = graph[newX][newY] - 'a';
+                    if (!visited[child][len]) {
+                        queue.offer(new Node(newX, newY, top.chunk, top.moves + Character.toString(dir)));    
+                        visited[child][len] = true;
+                    }
+                }
+            }
+            
+        }
+        return "";
+    }
+}
